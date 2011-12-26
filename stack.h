@@ -1,4 +1,11 @@
+#ifndef STACK_H
+#define STACK_H
 #include <stdlib.h>
+#include <string.h>
+
+/**
+ * Generic stack implementation.
+ */
 
 typedef struct {
     void *elems;
@@ -7,32 +14,14 @@ typedef struct {
     int allocLength;
 } stack;
 
-void *stackNew(stack *s, int elemSize)
-{
-    assert(s->elemSize > 0);
-    s->elemSize = elemSize;
-    s->logLength = 0;
-    s->elems = malloc(4*elemSize);
-    assert(s->elems != NULL);
-}
+static void stackGrow(stack *s);
 
-void *stackDispose(stack *s)
-{
-    free(s->elems);
-}
-void stackPush(stack *s, void *elemAddr)
-{
-    if(s->logicalLen == s->allocLength) {
-        stackGrown(s);
-    }
-    void *target = (char *) s->elems + s->logLength * s->elemSize;
-    memcpy(target, elemAddr, s->elemSize);
-    s->logLength++;
-}
+void *stackNew(stack *s, int size);
 
-int stackPop(stack *s, void *elemAddr)
-{
-    assert(s->logicalLen > 0);
-    s->logicalLen--;
-    return s->elems[s->logicalLen-1];
-}
+void *stackDispose(stack *s);
+
+void stackPush(stack *s, void *elemAddr);
+
+void stackPop(stack *s, void *elemAddr);
+
+#endif
